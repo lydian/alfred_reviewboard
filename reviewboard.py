@@ -5,24 +5,40 @@ import sys
 import time
 from operator import itemgetter
 
-from workflow import Workflow, ICON_WEB, web, notify
+from workflow import ICON_WEB, ICON_USER, web, notify, Workflow, MATCH_CAPITALS
+from workflow.background import run_in_background, is_running
 from rbtools.api.client import RBClient
 
 
 class RBClientWrapper(object):
 
-    def __init__(self, url, username, password):
-        self.username = username
-        client = RBClient(url, username=username, password=password)
-        self.root = client.get_root()
+    def __init__(self):
+        self.wf = Workflow()
+        login_info = self.wf.stored_data('login_info') or {}
+        self.username = login_info.get('user', None)
+        url = login_info.get('url', None)
+        try:
+            password = self.wf.get_password('review_board')
+        except:
+            password = None
 
-    def search_users(self, prefix):
-        users = self.root.get_users(q=prefix)
+        if self.username is not None and url is not None and password is not None:
+            client = RBClient(url, username=self.username, password=password)
+            self.root = client.get_root()
+        else:
+            self.root = None
+
+    def update_users(self):
+        count = self.root.get_users(counts_only=True).count
+        users = {}
         user_columns = ['username', 'fullname', 'avatar_url']
-        return [
-            {col: getattr(user, col) for col in user_columns}
-            for user in users
-        ]
+        for start in range(1, count + 1, 200):
+            for user in self.root.get_users(start=start, max_results=200):
+                users[user['username']] = {
+                    col: getattr(user, col) for col in user_columns}
+            print start, len(users)
+        self.wf.cache_data('users', users)
+        time.sleep(1)
 
     def _build_request_dict(self, request):
         return {
@@ -95,152 +111,121 @@ class RBClientWrapper(object):
         return self._build_request_dict(
             self.root.get_review_request(review_request_id=request_id))
 
+    def parse_argument(self):
+        parser = argparse.ArgumentParser()
+        parser.add_argument('action_type', default=False)
+        parser.add_argument('--data-type')
+        parser.add_argument('--data-value')
 
+        parser.add_argument('--query-user', dest='query_user', nargs=1, default=None)
+        parser.add_argument('--query-my', dest='query_my', action='store_true', default=False)
+        parser.add_argument('--query-to-me', dest='query_to_me', action='store_true', default=False)
+        parser.add_argument('--query-number', dest='query_number', nargs=1, default=None)
+        parser.add_argument('--to-log', dest='to_log', nargs=1, default=None)
+        return parser.parse_args(self.wf.args)
 
-def parse_argument():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('action_type', default=False)
-    parser.add_argument('--data-type')
-    parser.add_argument('--data-value')
+    def main(self, wf):
+        args = self.parse_argument()
+        if args.action_type == 'configure':
+            return store_data(args.data_type, args.data_value)
 
-    parser.add_argument('--search-user', dest='search_user', default=None)
-    parser.add_argument('--query-user', dest='query_user', nargs=1, default=None)
-    parser.add_argument('--query-my', dest='query_my', action='store_true', default=False)
-    parser.add_argument('--query-to-me', dest='query_to_me', action='store_true', default=False)
-    parser.add_argument('--query-number', dest='query_number', nargs=1, default=None)
-    parser.add_argument('--to-log', dest='to_log', nargs=1, default=None)
-    return parser.parse_args(wf.args)
+        if args.action_type == 'update_users':
+            return self.update_users()
 
+        elif args.action_type == 'search':
+            if self.root is None:
+                print str(e)
+                return build_login_config_items()
 
-def main(wf):
-    args = parse_argument()
-    data = maybe_get_data(wf)
-    if args.action_type == 'configure':
-        return store_data(wf, args.data_type, args.data_value)
+            if args.query_user:
+                query_user = args.query_user[0].split(':')
+                if len(query_user) == 1:
+                    search_user_prefix, = query_user
+                    return self.search_users(search_user_prefix)
+                else:
+                    search_user, search = query_user
+                    func = lambda: self.search_user_requests(search_user)
+                    rows = self.wf.cached_data(
+                        '{}_requests'.format(search_user), func, max_age=60 * 15)
+                    if search.strip() != '':
+                        rows = self.wf.filter(search, rows, itemgetter('summary'))
+                return self.build_items(rows)
 
-    if args.action_type == 'log':
-        return log_recent_selections(wf, args.to_log, data)
+            elif args.query_my:
+                func = lambda: self.search_my_open_requests()
+                rows = self.wf.cached_data('my_requests', func, max_age=60 * 15)
+                return self.build_items(rows)
+            elif args.query_to_me:
+                func = lambda: self.search_requests_to_me()
+                rows = self.wf.cached_data('request_to_me', func, max_age=0)
+                return self.build_items(rows)
+            else:
+                return self.build_default_items()
 
-    elif args.action_type == 'search':
+    def search_users(self, prefix):
+        if not self.wf.cached_data_fresh('users', 86400):
+            run_in_background(
+                'update_users', [
+                    '/usr/bin/python',
+                    self.wf.workflowfile('reviewboard.py'),
+                    'update_users'])
+
+        if is_running('update_users'):
+            self.wf.add_item('Updating users', icon=ICON_INFO)
+
+        user_caches = self.wf.cached_data('users', max_age=0) or dict()
+        matched_users = self.wf.filter(
+            prefix,
+            user_caches.items(),
+            key=itemgetter(0))
+        self.build_user_items(matched_users)
+
+    def store_data(self, data_type, value):
         try:
-            rb_wrapper = get_wrapper(wf)
+            if data_type == 'password':
+                self.wf.save_password('review_board', value)
+            else:
+                login_info = self.wf.stored_data('login_info') or {}
+                login_info[data_type] = value
+                self.wf.store_data('login_info', login_info)
+                stored = self.wf.stored_data('login_info')
+                assert stored == login_info
+            return notify.notify(title='Success', text='Your data is saved')
         except Exception as e:
-            print str(e)
-            return build_login_config_items(wf)
+            return notify.notify(title='Error!', text=str(e))
 
-        if args.search_user:
-            func = lambda: rb_wrapper.search_users(args.search_user)
-            rows = wf.cached_data('users', func, max_age=60 * 15)
-            return build_user_items(wf, rows)
+    def build_user_items(self, rows):
+        for username, row in rows[:10]:
+            self.wf.add_item(
+                title=row['fullname'],
+                subtitle=row['username'],
+                arg=row['username'],
+                valid=True,
+                icon=ICON_USER)
+        self.wf.send_feedback()
 
-        if args.query_user:
-            func = lambda: rb_wrapper.search_user_requests(args.query_user)
-            rows = wf.cached_data(
-                '{}_requests'.format(args.query_user), func, max_age=60 * 15)
-            return build_items(wf, rows)
-        elif args.query_my:
-            func = lambda: rb_wrapper.search_my_open_requests()
-            rows = wf.cached_data('my_requests', func, max_age=60 * 15)
-            return build_items(wf, rows)
-        elif args.query_to_me:
-            func = lambda: rb_wrapper.search_requests_to_me()
-            rows = wf.cached_data('request_to_me', func, max_age=0)
-            return build_items(wf, rows)
-        else:
-            return build_default_items()
+    def build_items(self, rows):
+        # Loop through the returned posts and add an item for each to
+        # the list of results for Alfred
+        for row in rows[:10]:
+            self.wf.add_item(
+                title='[{id}] {summary}'.format(
+                    id=row['id'],
+                    summary=row['summary']
+                ),
+                subtitle='{submitter} last_updated: {last_updated} primary: {primary_reviewers}'.format(
+                   submitter=row['submitter'],
+                   last_updated=row['last_updated'].strftime('%Y-%m-%d'),
+                   primary_reviewers=','.join(row['primary_reviewers'][:2])
+                ),
+                arg=row['absolute_url'],
+                valid=True,
+                icon=ICON_WEB)
 
-
-def store_data(wf, data_type, value):
-    try:
-        if data_type == 'password':
-            wf.save_password('review_board', value)
-        else:
-            login_info = wf.stored_data('login_info') or {}
-            login_info[data_type] = value
-            wf.store_data('login_info', login_info)
-            stored = wf.stored_data('login_info')
-            assert stored == login_info
-        return notify.notify(title='Success', text='Your data is saved')
-
-    except Exception as e:
-        return notify.notify(title='Error!', text=str(e))
-
-
-def get_wrapper(wf):
-    login_info = wf.stored_data('login_info') or {}
-    user = login_info.get('user', None)
-    url = login_info.get('url', None)
-    try:
-        password = wf.get_password('review_board')
-    except:
-        password = None
-
-    if user is None or url is None or password is None:
-        raise ValueError('Please Configure login info first')
-    return RBClientWrapper(url, user, password)
-
-
-def maybe_get_data(wf):
-    # Retrieve posts from cache if available and no more than 600
-    # seconds old
-    data = wf.stored_data('data')
-    if data is None:
-        data = {}
-    if time.time() - data.get('queried_time', 0) >= 60 * 10:
-        rows = get_rows()
-        data['rows'] = rows
-        data['queried_time'] = time.time()
-    wf.store_data('data', data)
-    return data
-
-
-def get_rows():
-    url = 'https://y.yelpcorp.com/api/list'
-    r = web.get(url)
-
-    # throw an error if request failed
-    # Workflow will catch this and show it to the user
-    r.raise_for_status()
-
-    # Parse the JSON returned by pinboard and extract the posts
-    result = r.json()
-    return result['data']
-
-
-
-def build_items(wf, rows):
-    # Loop through the returned posts and add an item for each to
-    # the list of results for Alfred
-    for row in rows[:10]:
-        wf.add_item(
-            title='[{id}] {summary}'.format(
-                id=row['id'],
-                summary=row['summary']
-            ),
-            subtitle='{submitter} last_updated: {last_updated} primary: {primary_reviewers}'.format(
-               submitter=row['submitter'],
-               last_updated=row['last_updated'].strftime('%Y-%m-%d'),
-               primary_reviewers=','.join(row['primary_reviewers'][:2])
-            ),
-            arg=row['absolute_url'],
-            valid=True,
-            icon=ICON_WEB)
-
-    # Send the results to Alfred as XML
-    wf.send_feedback()
-
-
-def log_recent_selections(wf, selected_url, data):
-    selected = filter(lambda (name, url): url == selected_url, data['rows'])
-    if len(selected) > 0:
-        data['recent'] = [selected[0]] + data.get('recent', [])
-    data['recent'] = data['recent'][:10]
-    wf.store_data('data', data)
-
-
-
+        # Send the results to Alfred as XML
+        self.wf.send_feedback()
 
 
 if __name__ == u"__main__":
-    wf = Workflow()
-    sys.exit(wf.run(main))
+    wrapper = RBClientWrapper()
+    sys.exit(wrapper.wf.run(wrapper.main))
