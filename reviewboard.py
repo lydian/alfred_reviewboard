@@ -1,9 +1,10 @@
 # encoding: utf-8
-from datetime import datetime
+import os
 import argparse
 import sys
 import time
 from operator import itemgetter
+from datetime import datetime
 
 from workflow import ICON_WEB, ICON_USER, web, notify, Workflow, MATCH_CAPITALS
 from workflow.background import run_in_background, is_running
@@ -16,14 +17,14 @@ class RBClientWrapper(object):
         self.wf = Workflow()
         login_info = self.wf.stored_data('login_info') or {}
         self.username = login_info.get('user', None)
-        url = login_info.get('url', None)
+        self.url = login_info.get('url', None)
         try:
             password = self.wf.get_password('review_board')
         except:
             password = None
 
-        if self.username is not None and url is not None and password is not None:
-            client = RBClient(url, username=self.username, password=password)
+        if self.username is not None and self.url is not None and password is not None:
+            client = RBClient(self.url, username=self.username, password=password)
             self.root = client.get_root()
         else:
             self.root = None
@@ -144,12 +145,23 @@ class RBClientWrapper(object):
                     return self.search_users(search_user_prefix)
                 else:
                     search_user, search = query_user
-                    func = lambda: self.search_user_requests(search_user)
-                    rows = self.wf.cached_data(
-                        '{}_requests'.format(search_user), func, max_age=60 * 15)
-                    if search.strip() != '':
-                        rows = self.wf.filter(search, rows, itemgetter('summary'))
-                return self.build_items(rows)
+                    selected_user = (
+                        self.wf.cached_data('users', max_age=0) or {}
+                    ).get(search_user, {})
+                    self.wf.add_item(
+                        title=selected_user['fullname'],
+                        subtitle="Go to %s page directly" % selected_user['username'],
+                        arg=os.path.join(self.url, 'users', selected_user['username']),
+                        icon=ICON_WEB,
+                        valid=True)
+                    rows = []
+                    if selected_user is not None:
+                        func = lambda: self.search_user_requests(search_user)
+                        rows = self.wf.cached_data(
+                            '{}_requests'.format(search_user), func, max_age=60 * 15)
+                        if search.strip() != '':
+                            rows = self.wf.filter(search, rows, itemgetter('summary'))
+                    return self.build_items(rows)
 
             elif args.query_my:
                 func = lambda: self.search_my_open_requests()
@@ -220,7 +232,7 @@ class RBClientWrapper(object):
                 ),
                 arg=row['absolute_url'],
                 valid=True,
-                icon=ICON_WEB)
+                icon='./icon.png')
 
         # Send the results to Alfred as XML
         self.wf.send_feedback()
