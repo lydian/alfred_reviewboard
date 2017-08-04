@@ -305,7 +305,7 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>r my</string>
+				<string>rmy</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -350,7 +350,7 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>r tome</string>
+				<string>rtome</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -455,7 +455,7 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>r user</string>
+				<string>ruser</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -521,9 +521,9 @@
 		<key>2919750A-B879-4DAB-BA0C-B42781D40583</key>
 		<dict>
 			<key>xpos</key>
-			<integer>520</integer>
+			<integer>480</integer>
 			<key>ypos</key>
-			<integer>580</integer>
+			<integer>590</integer>
 		</dict>
 		<key>29B26D40-733B-4356-A1DF-155FEBA34B68</key>
 		<dict>
@@ -542,9 +542,9 @@
 		<key>4140A9AB-3DB6-482A-994A-63CE452E6AA1</key>
 		<dict>
 			<key>xpos</key>
-			<integer>740</integer>
+			<integer>680</integer>
 			<key>ypos</key>
-			<integer>440</integer>
+			<integer>430</integer>
 		</dict>
 		<key>70DEC438-ED8A-40FA-BE45-1D04D9371B20</key>
 		<dict>

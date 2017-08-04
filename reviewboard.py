@@ -67,7 +67,6 @@ class RBClientWrapper(object):
         return map(self._build_request_dict, self.root.get_review_requests(**kwargs))
 
     def search_requests_to_me(self):
-        notify.notify(title='search_to_user', text='username: %s' % self.username)
         requests = self._search_review_requests(
                 to_users_directly=self.username, status='pending')
         def _sort_key(r):
@@ -128,15 +127,19 @@ class RBClientWrapper(object):
     def main(self, wf):
         args = self.parse_argument()
         if args.action_type == 'configure':
-            return store_data(args.data_type, args.data_value)
+            return self.store_data(args.data_type, args.data_value)
 
         if args.action_type == 'update_users':
             return self.update_users()
 
         elif args.action_type == 'search':
             if self.root is None:
-                print str(e)
-                return build_login_config_items()
+                self.wf.add_item(
+                    title="Not Configured",
+                    subtitle="Please User r config to configure user, password and url",
+                    valid=False
+                )
+                return self.wf.send_feedback()
 
             if args.query_user:
                 query_user = args.query_user[0].split(':')
@@ -169,7 +172,7 @@ class RBClientWrapper(object):
                 return self.build_items(rows)
             elif args.query_to_me:
                 func = lambda: self.search_requests_to_me()
-                rows = self.wf.cached_data('request_to_me', func, max_age=0)
+                rows = self.wf.cached_data('request_to_me', func, max_age=60 * 15)
                 return self.build_items(rows)
             else:
                 return self.build_default_items()
