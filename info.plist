@@ -59,6 +59,16 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>9A55CEC6-0A54-408C-9C71-F3ED4C402D5E</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
 		</array>
 		<key>70DEC438-ED8A-40FA-BE45-1D04D9371B20</key>
 		<array/>
@@ -90,6 +100,8 @@
 				<false/>
 			</dict>
 		</array>
+		<key>9A55CEC6-0A54-408C-9C71-F3ED4C402D5E</key>
+		<array/>
 		<key>B4777745-91DA-4D7B-A99C-984E9B70E4C0</key>
 		<array>
 			<dict>
@@ -301,11 +313,11 @@
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
-				<integer>2</integer>
+				<integer>1</integer>
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>rmy</string>
+				<string>r my</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -317,9 +329,9 @@
 				<key>runningsubtext</key>
 				<string>Loading.. please wait</string>
 				<key>script</key>
-				<string>python reviewboard.py search --query-my</string>
+				<string>python reviewboard.py search my {query}</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
@@ -329,7 +341,7 @@
 				<key>type</key>
 				<integer>0</integer>
 				<key>withspace</key>
-				<false/>
+				<true/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.scriptfilter</string>
@@ -341,16 +353,33 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>argument</key>
+				<string>'{query}', {allvars}</string>
+				<key>cleardebuggertext</key>
+				<true/>
+				<key>processoutputs</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.debug</string>
+			<key>uid</key>
+			<string>9A55CEC6-0A54-408C-9C71-F3ED4C402D5E</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
-				<integer>2</integer>
+				<integer>1</integer>
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>rtome</string>
+				<string>r tome</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -362,9 +391,9 @@
 				<key>runningsubtext</key>
 				<string>Loading.. please wait</string>
 				<key>script</key>
-				<string>python reviewboard.py search --query-to-me</string>
+				<string>python reviewboard.py search to_me {query}</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
@@ -374,7 +403,7 @@
 				<key>type</key>
 				<integer>0</integer>
 				<key>withspace</key>
-				<false/>
+				<true/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.scriptfilter</string>
@@ -389,7 +418,7 @@
 				<key>alfredfiltersresults</key>
 				<false/>
 				<key>argumenttrimmode</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>argumenttype</key>
 				<integer>0</integer>
 				<key>escaping</key>
@@ -405,7 +434,7 @@
 				<key>runningsubtext</key>
 				<string>Loading.. please wait</string>
 				<key>script</key>
-				<string>python reviewboard.py search --query-user {query}</string>
+				<string>python reviewboard.py search user {query}</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -455,7 +484,7 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>ruser</string>
+				<string>r user</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -467,7 +496,7 @@
 				<key>runningsubtext</key>
 				<string>Loading.. please wait</string>
 				<key>script</key>
-				<string>python reviewboard.py search --query-user {query}</string>
+				<string>python reviewboard.py search user {query}</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -573,6 +602,13 @@
 			<integer>70</integer>
 			<key>ypos</key>
 			<integer>700</integer>
+		</dict>
+		<key>9A55CEC6-0A54-408C-9C71-F3ED4C402D5E</key>
+		<dict>
+			<key>xpos</key>
+			<integer>290</integer>
+			<key>ypos</key>
+			<integer>530</integer>
 		</dict>
 		<key>B4777745-91DA-4D7B-A99C-984E9B70E4C0</key>
 		<dict>

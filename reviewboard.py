@@ -6,15 +6,17 @@ import time
 from operator import itemgetter
 from datetime import datetime
 
-from workflow import ICON_WEB, ICON_USER, web, notify, Workflow, MATCH_CAPITALS
+from workflow import ICON_WEB, ICON_USER, web, notify, Workflow, MATCH_CAPITALS, ICON_INFO
 from workflow.background import run_in_background, is_running
-from rbtools.api.client import RBClient
 
 
 class RBClientWrapper(object):
 
     def __init__(self):
-        self.wf = Workflow()
+        self.wf = Workflow(libraries=['./lib'])
+        # rbtools path will only be added after wf is initialized
+        from rbtools.api.client import RBClient
+
         login_info = self.wf.stored_data('login_info') or {}
         self.username = login_info.get('user', None)
         self.url = login_info.get('url', None)
@@ -37,9 +39,9 @@ class RBClientWrapper(object):
             for user in self.root.get_users(start=start, max_results=200):
                 users[user['username']] = {
                     col: getattr(user, col) for col in user_columns}
-            print start, len(users)
+            time.sleep(1)
         self.wf.cache_data('users', users)
-        time.sleep(1)
+        self.wf.cache_data('users_list', users.keys())
 
     def _build_request_dict(self, request):
         return {
@@ -66,68 +68,33 @@ class RBClientWrapper(object):
         """
         return map(self._build_request_dict, self.root.get_review_requests(**kwargs))
 
-    def search_requests_to_me(self):
-        requests = self._search_review_requests(
-                to_users_directly=self.username, status='pending')
-        def _sort_key(r):
-            return [
-                # First check if I am the primary reviewer,
-                (self.username not in r['primary_reviewers']),
-                # Check if I am on the reviewer list
-                (self.username not in r['target_people']),
-                # No one show the love yet,
-                r['ship_it_count'] != 0,
-                # look for latest_updated
-                datetime.now() - r['last_updated'],
-            ]
-        return sorted(requests, key=_sort_key)
-
-    def search_my_open_requests(self):
-        requests = self._search_review_requests(
-            from_user=self.username, status='pending')
-        def _sort_key(r):
-            return [
-                # No one show the love yet,
-                r['ship_it_count'] == 0,
-                # look for latest_updated
-                datetime.now() - r['last_updated'],
-                datetime.now() - r['time_added']
-            ]
-
-        return sorted(requests, key=_sort_key)[:10]
-
-    def search_user_requests(self, username):
-        requests = self._search_review_requests(
-            from_user=username, status='all')
-
-        def _sort_key(r):
-            return [
-                # look for latest_updated
-                datetime.now() - r['last_updated'],
-            ]
-        return sorted(requests, key=_sort_key)[:10]
-
     def get_review_request_info(self, request_id):
         return self._build_request_dict(
             self.root.get_review_request(review_request_id=request_id))
 
     def parse_argument(self):
-        parser = argparse.ArgumentParser()
-        parser.add_argument('action_type', default=False)
-        parser.add_argument('--data-type')
-        parser.add_argument('--data-value')
+        parser = argparse.ArgumentParser(prog='PROG')
+        subparsers = parser.add_subparsers(help='sub-command help')
+        config_parser = subparsers.add_parser('configure', help='configure help')
+        config_parser.add_argument('--action-type', default='configure')
+        config_parser.add_argument('--data-type')
+        config_parser.add_argument('--data-value')
 
-        parser.add_argument('--query-user', dest='query_user', nargs=1, default=None)
-        parser.add_argument('--query-my', dest='query_my', action='store_true', default=False)
-        parser.add_argument('--query-to-me', dest='query_to_me', action='store_true', default=False)
-        parser.add_argument('--query-number', dest='query_number', nargs=1, default=None)
-        parser.add_argument('--to-log', dest='to_log', nargs=1, default=None)
+        search_parser = subparsers.add_parser('search', help='search help')
+        search_parser.add_argument('--action-type', default='search')
+        search_parser.add_argument('query_type', choices=['to_me', 'user', 'my'], default=None)
+        search_parser.add_argument('extra_filters', nargs='*', default=[])
+
+        update_parser = subparsers.add_parser('update_users', help='search help')
+        update_parser.add_argument('--action-type', default='update_users')
+
         return parser.parse_args(self.wf.args)
+
 
     def main(self, wf):
         args = self.parse_argument()
         if args.action_type == 'configure':
-            return self.store_data(args.data_type, args.data_value)
+            return self.store_config(args.data_type, args.data_value)
 
         if args.action_type == 'update_users':
             return self.update_users()
@@ -141,13 +108,29 @@ class RBClientWrapper(object):
                 )
                 return self.wf.send_feedback()
 
-            if args.query_user:
-                query_user = args.query_user[0].split(':')
+            def parse_filters(filter_args):
+                return dict(
+                    filter_string.split(':')
+                    for filter_string in filter_args
+                    if len(filter_string.split(':')) == 2
+                )
+
+            if args.query_type == 'user':
+                query_user = (args.extra_filters or [''])[0].split(':')
                 if len(query_user) == 1:
                     search_user_prefix, = query_user
                     return self.search_users(search_user_prefix)
                 else:
-                    search_user, search = query_user
+                    search_user, search_term = query_user
+                    self.log_searched_user(search_user)
+                    if len(args.extra_filters) > 1:
+                        extra_filters = parse_filters(args.extra_filters[1:])
+                    else:
+                        extra_filters = {}
+                    filters = {'from_user': search_user}
+                    alias=search_user
+
+                    # Build Custom row
                     selected_user = (
                         self.wf.cached_data('users', max_age=0) or {}
                     ).get(search_user, {})
@@ -158,44 +141,77 @@ class RBClientWrapper(object):
                         icon=ICON_WEB,
                         valid=True)
                     rows = []
-                    if selected_user is not None:
-                        func = lambda: self.search_user_requests(search_user)
-                        rows = self.wf.cached_data(
-                            '{}_requests'.format(search_user), func, max_age=60 * 15)
-                        if search.strip() != '':
-                            rows = self.wf.filter(search, rows, itemgetter('summary'))
-                    return self.build_items(rows)
 
-            elif args.query_my:
-                func = lambda: self.search_my_open_requests()
-                rows = self.wf.cached_data('my_requests', func, max_age=60 * 15)
-                return self.build_items(rows)
-            elif args.query_to_me:
-                func = lambda: self.search_requests_to_me()
-                rows = self.wf.cached_data('request_to_me', func, max_age=60 * 15)
-                return self.build_items(rows)
-            else:
-                return self.build_default_items()
+                    if selected_user is None:
+                        self.wf.add_item(
+                            title='Could Not find user',
+                            icon=ICON_INFO,
+                            valid=False)
+                        return self.wf.send_feedback()
+
+            if args.query_type == 'my':
+                extra_filters = parse_filters(args.extra_filters)
+                filters = {'from_user': self.username}
+                search_term = ([
+                    row for row in args.extra_filters
+                    if len(row.split(':')) == 1] or [''])[0]
+                alias = self.username
+
+            if args.query_type == 'to_me':
+                extra_filters = parse_filters(args.extra_filters)
+                filters = {'to_users_directly': self.username}
+                search_term = ([
+                    row for row in args.extra_filters
+                    if len(row.split(':')) == 1] or [''])[0]
+                alias = 'to_me'
+
+            filters['status'] = 'all'
+            func = lambda: self._search_review_requests(**filters)
+            rows = self.wf.cached_data(
+                    '{}_requests'.format(alias), func, max_age=60 * 15)
+            if extra_filters:
+                rows = filter(
+                    lambda row: all(
+                        row[key] == value
+                        for key, value in extra_filters.iteritems()),
+                    rows)
+            if search_term.strip() != '':
+                rows = self.wf.filter(search_term, rows, itemgetter('summary'))
+            return self.build_items(rows)
+
+
+    def log_searched_user(self, username):
+        user_search_history = self.wf.stored_data('recent_users') or []
+        user_search_history = [username] + [
+            user for user in user_search_history if user != username]
+        self.wf.store_data('recent_users', user_search_history[:10])
 
     def search_users(self, prefix):
-        if not self.wf.cached_data_fresh('users', 86400):
+        user_search_history = self.wf.stored_data('recent_users') or []
+        if prefix.strip() != '':
+            matched_users = self.wf.filter(prefix, user_search_history)
+        else:
+            matched_users = user_search_history
+
+        if not self.wf.cached_data_fresh('users_list', 86400):
             run_in_background(
                 'update_users', [
                     '/usr/bin/python',
                     self.wf.workflowfile('reviewboard.py'),
                     'update_users'])
-
         if is_running('update_users'):
             self.wf.add_item('Updating users', icon=ICON_INFO)
-
         user_caches = self.wf.cached_data('users', max_age=0) or dict()
-        matched_users = self.wf.filter(
-            prefix,
-            user_caches.items(),
-            key=itemgetter(0))
-        self.build_user_items(matched_users)
 
-    def store_data(self, data_type, value):
+        if len(matched_users) == 0 and prefix.strip() != '':
+            users_list = self.wf.cached_data('users_list', max_age=0) or set()
+            matched_users = self.wf.filter(
+                prefix,
+                users_list)
+        self.build_user_items([
+            (user, user_caches[user]) for user in matched_users])
+
+    def store_config(self, data_type, value):
         try:
             if data_type == 'password':
                 self.wf.save_password('review_board', value)
@@ -235,7 +251,7 @@ class RBClientWrapper(object):
                 ),
                 arg=row['absolute_url'],
                 valid=True,
-                icon='./icon.png')
+                icon="./icon.png")
 
         # Send the results to Alfred as XML
         self.wf.send_feedback()
