@@ -8,37 +8,11 @@
 	<string>Yelp</string>
 	<key>connections</key>
 	<dict>
-		<key>1E6EF9A7-1CD4-411F-ADBA-141E633A0822</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>FA09B22D-E689-46F7-852C-FB4504B2D896</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
-		<key>2919750A-B879-4DAB-BA0C-B42781D40583</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>4140A9AB-3DB6-482A-994A-63CE452E6AA1</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
 		<key>29B26D40-733B-4356-A1DF-155FEBA34B68</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>4140A9AB-3DB6-482A-994A-63CE452E6AA1</string>
+				<string>A64C4096-DF6C-4BE8-B030-495B9D78C300</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -51,17 +25,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>4140A9AB-3DB6-482A-994A-63CE452E6AA1</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>9A55CEC6-0A54-408C-9C71-F3ED4C402D5E</string>
+				<string>A64C4096-DF6C-4BE8-B030-495B9D78C300</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -70,13 +34,11 @@
 				<false/>
 			</dict>
 		</array>
-		<key>70DEC438-ED8A-40FA-BE45-1D04D9371B20</key>
-		<array/>
-		<key>8A370B14-16E9-4A66-8D24-BF1E4A333870</key>
+		<key>9371B428-E3F9-4E46-870C-424AC149C5E6</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>70DEC438-ED8A-40FA-BE45-1D04D9371B20</string>
+				<string>E19F2966-048E-4624-B03E-A1C5E17CB174</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -85,13 +47,11 @@
 				<false/>
 			</dict>
 		</array>
-		<key>94209704-DD7E-44F8-AAC2-955A976FE608</key>
-		<array/>
 		<key>98ECF621-28A9-4CF4-A1EB-063D08424D66</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>B4777745-91DA-4D7B-A99C-984E9B70E4C0</string>
+				<string>A64C4096-DF6C-4BE8-B030-495B9D78C300</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -100,48 +60,7 @@
 				<false/>
 			</dict>
 		</array>
-		<key>9A55CEC6-0A54-408C-9C71-F3ED4C402D5E</key>
-		<array/>
-		<key>B4777745-91DA-4D7B-A99C-984E9B70E4C0</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>BF8503ED-5267-483C-8B3B-4CE56CB8AC7C</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
-		<key>BF8503ED-5267-483C-8B3B-4CE56CB8AC7C</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>2919750A-B879-4DAB-BA0C-B42781D40583</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
-		<key>D4DA56B9-9477-43D7-84F8-A46785630D68</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>94209704-DD7E-44F8-AAC2-955A976FE608</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
-		<key>FA09B22D-E689-46F7-852C-FB4504B2D896</key>
+		<key>A64C4096-DF6C-4BE8-B030-495B9D78C300</key>
 		<array/>
 	</dict>
 	<key>createdby</key>
@@ -162,7 +81,7 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>python reviewboard.py configure --data-type user --data-value {query}</string>
+				<string>python reviewboard.py configure --save {query}</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -173,137 +92,9 @@
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
 			<key>uid</key>
-			<string>70DEC438-ED8A-40FA-BE45-1D04D9371B20</string>
+			<string>E19F2966-048E-4624-B03E-A1C5E17CB174</string>
 			<key>version</key>
 			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argumenttype</key>
-				<integer>0</integer>
-				<key>keyword</key>
-				<string>r config user</string>
-				<key>subtext</key>
-				<string></string>
-				<key>text</key>
-				<string>configure your rb username</string>
-				<key>withspace</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.keyword</string>
-			<key>uid</key>
-			<string>8A370B14-16E9-4A66-8D24-BF1E4A333870</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argumenttype</key>
-				<integer>0</integer>
-				<key>keyword</key>
-				<string>r config password</string>
-				<key>subtext</key>
-				<string></string>
-				<key>text</key>
-				<string>configure your reviewboard password</string>
-				<key>withspace</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.keyword</string>
-			<key>uid</key>
-			<string>D4DA56B9-9477-43D7-84F8-A46785630D68</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>script</key>
-				<string>python reviewboard.py configure --data-type password --data-value {query}</string>
-				<key>scriptargtype</key>
-				<integer>0</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>type</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>94209704-DD7E-44F8-AAC2-955A976FE608</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argumenttype</key>
-				<integer>0</integer>
-				<key>keyword</key>
-				<string>r config url</string>
-				<key>subtext</key>
-				<string></string>
-				<key>text</key>
-				<string>configure your reviewboard URL</string>
-				<key>withspace</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.keyword</string>
-			<key>uid</key>
-			<string>1E6EF9A7-1CD4-411F-ADBA-141E633A0822</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>script</key>
-				<string>python reviewboard.py configure --data-type url --data-value {query}</string>
-				<key>scriptargtype</key>
-				<integer>0</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>type</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>FA09B22D-E689-46F7-852C-FB4504B2D896</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>browser</key>
-				<string></string>
-				<key>spaces</key>
-				<string></string>
-				<key>url</key>
-				<string>{query}</string>
-				<key>utf8</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.openurl</string>
-			<key>uid</key>
-			<string>4140A9AB-3DB6-482A-994A-63CE452E6AA1</string>
-			<key>version</key>
-			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -317,7 +108,75 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>r my</string>
+				<string>rconfig</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string></string>
+				<key>script</key>
+				<string>python reviewboard.py configure {query}</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>Configure Revieboard</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>9371B428-E3F9-4E46-870C-424AC149C5E6</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>python reviewboard.py launch {query}</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>A64C4096-DF6C-4BE8-B030-495B9D78C300</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>rmy</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -337,7 +196,7 @@
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
-				<string>search my open review requests</string>
+				<string>search my review requests</string>
 				<key>type</key>
 				<integer>0</integer>
 				<key>withspace</key>
@@ -353,23 +212,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>argument</key>
-				<string>'{query}', {allvars}</string>
-				<key>cleardebuggertext</key>
-				<true/>
-				<key>processoutputs</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.debug</string>
-			<key>uid</key>
-			<string>9A55CEC6-0A54-408C-9C71-F3ED4C402D5E</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
 				<key>argumenttrimmode</key>
@@ -379,7 +221,7 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>r tome</string>
+				<string>rtome</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -423,68 +265,8 @@
 				<integer>0</integer>
 				<key>escaping</key>
 				<integer>102</integer>
-				<key>queuedelaycustom</key>
-				<integer>3</integer>
-				<key>queuedelayimmediatelyinitially</key>
-				<false/>
-				<key>queuedelaymode</key>
-				<integer>1</integer>
-				<key>queuemode</key>
-				<integer>1</integer>
-				<key>runningsubtext</key>
-				<string>Loading.. please wait</string>
-				<key>script</key>
-				<string>python reviewboard.py search user {query}</string>
-				<key>scriptargtype</key>
-				<integer>0</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>subtext</key>
-				<string></string>
-				<key>title</key>
-				<string>search review requests to {user}</string>
-				<key>type</key>
-				<integer>0</integer>
-				<key>withspace</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
-			<key>uid</key>
-			<string>2919750A-B879-4DAB-BA0C-B42781D40583</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>matchmode</key>
-				<integer>0</integer>
-				<key>matchstring</key>
-				<string>{var:user}</string>
-				<key>replacestring</key>
-				<string>{var:user}:</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.replace</string>
-			<key>uid</key>
-			<string>BF8503ED-5267-483C-8B3B-4CE56CB8AC7C</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>alfredfiltersresults</key>
-				<false/>
-				<key>argumenttrimmode</key>
-				<integer>0</integer>
-				<key>argumenttype</key>
-				<integer>0</integer>
-				<key>escaping</key>
-				<integer>102</integer>
 				<key>keyword</key>
-				<string>r user</string>
+				<string>ruser</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -496,7 +278,8 @@
 				<key>runningsubtext</key>
 				<string>Loading.. please wait</string>
 				<key>script</key>
-				<string>python reviewboard.py search user {query}</string>
+				<string>python reviewboard.py search user --username {query}
+</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -504,7 +287,7 @@
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
-				<string>search review requests to {user}</string>
+				<string>search review requests from {user}</string>
 				<key>type</key>
 				<integer>0</integer>
 				<key>withspace</key>
@@ -517,47 +300,15 @@
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argument</key>
-				<string>{query}</string>
-				<key>variables</key>
-				<dict>
-					<key>user</key>
-					<string>{query}</string>
-				</dict>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.argument</string>
-			<key>uid</key>
-			<string>B4777745-91DA-4D7B-A99C-984E9B70E4C0</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
 	<key>uidata</key>
 	<dict>
-		<key>1E6EF9A7-1CD4-411F-ADBA-141E633A0822</key>
-		<dict>
-			<key>xpos</key>
-			<integer>70</integer>
-			<key>ypos</key>
-			<integer>310</integer>
-		</dict>
-		<key>2919750A-B879-4DAB-BA0C-B42781D40583</key>
-		<dict>
-			<key>xpos</key>
-			<integer>480</integer>
-			<key>ypos</key>
-			<integer>590</integer>
-		</dict>
 		<key>29B26D40-733B-4356-A1DF-155FEBA34B68</key>
 		<dict>
 			<key>xpos</key>
-			<integer>70</integer>
+			<integer>60</integer>
 			<key>ypos</key>
 			<integer>570</integer>
 		</dict>
@@ -568,75 +319,33 @@
 			<key>ypos</key>
 			<integer>440</integer>
 		</dict>
-		<key>4140A9AB-3DB6-482A-994A-63CE452E6AA1</key>
-		<dict>
-			<key>xpos</key>
-			<integer>680</integer>
-			<key>ypos</key>
-			<integer>430</integer>
-		</dict>
-		<key>70DEC438-ED8A-40FA-BE45-1D04D9371B20</key>
-		<dict>
-			<key>xpos</key>
-			<integer>290</integer>
-			<key>ypos</key>
-			<integer>60</integer>
-		</dict>
-		<key>8A370B14-16E9-4A66-8D24-BF1E4A333870</key>
+		<key>9371B428-E3F9-4E46-870C-424AC149C5E6</key>
 		<dict>
 			<key>xpos</key>
 			<integer>70</integer>
 			<key>ypos</key>
-			<integer>60</integer>
-		</dict>
-		<key>94209704-DD7E-44F8-AAC2-955A976FE608</key>
-		<dict>
-			<key>xpos</key>
-			<integer>290</integer>
-			<key>ypos</key>
-			<integer>180</integer>
+			<integer>240</integer>
 		</dict>
 		<key>98ECF621-28A9-4CF4-A1EB-063D08424D66</key>
 		<dict>
 			<key>xpos</key>
-			<integer>70</integer>
+			<integer>60</integer>
 			<key>ypos</key>
 			<integer>700</integer>
 		</dict>
-		<key>9A55CEC6-0A54-408C-9C71-F3ED4C402D5E</key>
+		<key>A64C4096-DF6C-4BE8-B030-495B9D78C300</key>
 		<dict>
 			<key>xpos</key>
-			<integer>290</integer>
+			<integer>490</integer>
 			<key>ypos</key>
-			<integer>530</integer>
+			<integer>380</integer>
 		</dict>
-		<key>B4777745-91DA-4D7B-A99C-984E9B70E4C0</key>
+		<key>E19F2966-048E-4624-B03E-A1C5E17CB174</key>
 		<dict>
 			<key>xpos</key>
-			<integer>280</integer>
+			<integer>490</integer>
 			<key>ypos</key>
-			<integer>720</integer>
-		</dict>
-		<key>BF8503ED-5267-483C-8B3B-4CE56CB8AC7C</key>
-		<dict>
-			<key>xpos</key>
-			<integer>390</integer>
-			<key>ypos</key>
-			<integer>690</integer>
-		</dict>
-		<key>D4DA56B9-9477-43D7-84F8-A46785630D68</key>
-		<dict>
-			<key>xpos</key>
-			<integer>70</integer>
-			<key>ypos</key>
-			<integer>180</integer>
-		</dict>
-		<key>FA09B22D-E689-46F7-852C-FB4504B2D896</key>
-		<dict>
-			<key>xpos</key>
-			<integer>290</integer>
-			<key>ypos</key>
-			<integer>310</integer>
+			<integer>240</integer>
 		</dict>
 	</dict>
 	<key>webaddress</key>

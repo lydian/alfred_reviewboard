@@ -1,0 +1,3 @@
+[submodule "submodules/rbtools"]
+	path = submodules/rbtools
+	url = https://github.com/reviewboard/rbtools.git
