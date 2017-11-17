@@ -101,6 +101,8 @@
 			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
@@ -169,6 +171,8 @@
 			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
@@ -214,6 +218,8 @@
 			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
@@ -259,6 +265,8 @@
 			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
 				<key>argumenttrimmode</key>
 				<integer>1</integer>
 				<key>argumenttype</key>
@@ -278,7 +286,7 @@
 				<key>runningsubtext</key>
 				<string>Loading.. please wait</string>
 				<key>script</key>
-				<string>python reviewboard.py search user --username {query}
+				<string>echo '{query}' | sed 's/ $/ -/g' | xargs python reviewboard.py search user --username
 </string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
@@ -308,44 +316,44 @@
 		<key>29B26D40-733B-4356-A1DF-155FEBA34B68</key>
 		<dict>
 			<key>xpos</key>
-			<integer>60</integer>
+			<integer>90</integer>
 			<key>ypos</key>
-			<integer>570</integer>
+			<integer>330</integer>
 		</dict>
 		<key>2BBAACFA-C4AA-4930-B905-9A8423BDD073</key>
 		<dict>
 			<key>xpos</key>
-			<integer>70</integer>
+			<integer>90</integer>
 			<key>ypos</key>
-			<integer>440</integer>
+			<integer>210</integer>
 		</dict>
 		<key>9371B428-E3F9-4E46-870C-424AC149C5E6</key>
 		<dict>
 			<key>xpos</key>
-			<integer>70</integer>
+			<integer>90</integer>
 			<key>ypos</key>
-			<integer>240</integer>
+			<integer>70</integer>
 		</dict>
 		<key>98ECF621-28A9-4CF4-A1EB-063D08424D66</key>
 		<dict>
 			<key>xpos</key>
-			<integer>60</integer>
+			<integer>90</integer>
 			<key>ypos</key>
-			<integer>700</integer>
+			<integer>450</integer>
 		</dict>
 		<key>A64C4096-DF6C-4BE8-B030-495B9D78C300</key>
 		<dict>
 			<key>xpos</key>
-			<integer>490</integer>
+			<integer>510</integer>
 			<key>ypos</key>
-			<integer>380</integer>
+			<integer>210</integer>
 		</dict>
 		<key>E19F2966-048E-4624-B03E-A1C5E17CB174</key>
 		<dict>
 			<key>xpos</key>
-			<integer>490</integer>
+			<integer>510</integer>
 			<key>ypos</key>
-			<integer>240</integer>
+			<integer>70</integer>
 		</dict>
 	</dict>
 	<key>webaddress</key>

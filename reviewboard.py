@@ -23,7 +23,7 @@ from workflow.background import run_in_background
 from rb_wrapper import RBWrapper
 
 
-__version__ = '1.0.0'
+__version__ = '1.1.0'
 WF_CONFIG = {
     'github_slug': 'lydian/alfred_reviewboard',
     'version': __version__,
@@ -116,21 +116,24 @@ class RBFlow(object):
     def _parse_filters(self, filter_args):
         search_term = []
         extra_filter = {}
-
+        operators = {'~', '='}
         for filter_string in filter_args:
-            parsed_filter = filter_string.split(':')
-            if len(parsed_filter) == 2:
-                extra_filter[parsed_filter[0]] = parsed_filter[1]
+            m = re.match('(?P<column>.*)(?P<operator>[~=])(?P<value>.*)', filter_string)
+            if m:
+                extra_filter[m.group('column')] = (
+                    m.group('operator'), m.group('value'))
             else:
-                search_term.append(parsed_filter[0])
+                search_term.append(filter_string)
+
+            parsed_filter = filter_string.split(':')
         return [search_term, extra_filter]
 
     def _filter_cr(self, rows, search_terms, extra_filter):
         if extra_filter:
             rows = filter(
                 lambda row: all(
-                    row[key] == value
-                    for key, value in extra_filter.iteritems()),
+                    row[key] == value if operator == '=' else value in row[key]
+                    for key, (operator, value) in extra_filter.iteritems()),
                 rows)
         for search_term in search_terms:
             rows = self.wf.filter(search_term.strip(), rows, itemgetter('summary'))
@@ -174,7 +177,11 @@ class RBFlow(object):
 
     def query_user_crs(self, wrapper, args):
         user_rows = self.search_user_name(args.search_user)
-        if len(user_rows) == 1:
+        selected = [row for row in user_rows if row['username'] == args.search_user]
+        extra_filter = args.extra_filter
+        if len(extra_filter) > 0:
+            if extra_filter == ['-']:
+                extra_filter = []
             selected = user_rows[0]
             cr_rows = self.wf.cached_data(
                 '{}_requests'.format(selected['username']),
@@ -185,7 +192,7 @@ class RBFlow(object):
 
         cr_rows = self._filter_cr(
             cr_rows,
-            *self._parse_filters(args.extra_filter))
+            *self._parse_filters(extra_filter))
 
         if not cr_rows:  # Show users
             self.build_user_items(user_rows)
@@ -304,6 +311,18 @@ class RBFlow(object):
     def build_items(self, rows):
         # Loop through the returned posts and add an item for each to
         # the list of results for Alfred
+        def _select_icon(row):
+            if row['status'] == 'submitted':
+                return './submitted.png'
+            if row['status'] == 'discarded':
+                return './discarded.png'
+            if row['issue_open_count'] > 0:
+                return './unresolved.png'
+            if row['ship_it_count'] > 0:
+                return './shipit.png'
+            else:
+                return './pending.png'
+
         for row in rows[:10]:
             reviewers = list(set(
                 row.get('primary_reviewers', []) +  row['target_people']))
@@ -319,7 +338,7 @@ class RBFlow(object):
                 ),
                 arg='review-{}'.format(row['id']),
                 valid=True,
-                icon="./icon.png")
+                icon=_select_icon(row))
 
 
     def launch(self, wrapper, args):

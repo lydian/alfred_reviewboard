@@ -36,7 +36,7 @@ class RBWrapper(object):
             time.sleep(1)
         return users
 
-    def search(self, **filters):
+    def search(self, total=None, **filters):
         """search list of reviews based on the given filters
 
         for available filters:
@@ -55,6 +55,7 @@ class RBWrapper(object):
                 'ship_it_count': request.ship_it_count,
                 'status': request.status,
                 'submitter': request.links.submitter.title,
+                'issue_open_count': request.issue_open_count,
                 'repo': request.links.repository.title,
                 'target_people': [p.title for p in request.target_people],
                 'absolute_url': request.absolute_url,
@@ -66,17 +67,32 @@ class RBWrapper(object):
                     if u.strip() != ''],
                     key=lambda name: name != self.user)
                 }
-        return map(
-            _build_request_dict,
-            self.root.get_review_requests(**filters))
+        if total is None:
+            total = self.root.get_review_requests(
+                counts_only=True,
+                **filters
+            ).count
 
-    def search_cr_from(self, username=None):
+        result = []
+        for start in range(1, total, 200):
+            result.extend(
+                map(
+                    _build_request_dict,
+                    self.root.get_review_requests(
+                        start=start, max_results=200, **filters
+                    )
+                )
+            )
+        return result
+
+    def search_cr_from(self, username=None, total=None):
         """shortcut for search cr from specific user
         if no username is given, search "my" crs
         """
         if username is None:
             username = self.user
-        return self.search(from_user=username, status='all')
+        result = self.search(from_user=username, status='all', total=total)
+        return result
 
     def search_cr_to(self, username=None):
         """shortcut for search cr to specific user
