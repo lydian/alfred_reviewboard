@@ -21,9 +21,9 @@ from workflow.background import is_running
 from workflow.background import run_in_background
 
 from rb_wrapper import RBWrapper
+from settings_window import open_settings
 
-
-__version__ = '1.1.0'
+__version__ = '1.2.0'
 WF_CONFIG = {
     'github_slug': 'lydian/alfred_reviewboard',
     'version': __version__,
@@ -85,10 +85,7 @@ class RBFlow(object):
     def main(self, wf):
         args = self.parse_argument()
         if args.action_type == 'configure':
-            if args.save:
-                return self.store_config(args)
-            else:
-                return self.configure(args)
+            open_settings(self)
 
         wrapper = self.get_rb_wrapper()
         if args.action_type == 'update_users':
@@ -260,18 +257,17 @@ class RBFlow(object):
         self.build_config_items(args.data_type, args.data_value)
         return self.wf.send_feedback()
 
-    def store_config(self, args):
+    def store_config(self, config):
         try:
-            if args.data_type == 'password':
-                self.wf.save_password('review_board', args.data_value)
-            else:
-                login_info = self.get_login_info()
-                login_info[args.data_type] = args.data_value
-                self.wf.store_data('login_info', login_info)
-                stored = self.wf.stored_data('login_info')
-                assert stored == login_info
+            self.wf.save_password('review_board', config["password"])
+            login_info = self.get_login_info()
+            login_info["user"] = config["user"]
+            login_info["url"] = config["url"]
+            self.wf.store_data('login_info', login_info)
+            stored = self.wf.stored_data('login_info')
+            assert stored == login_info
             return notify.notify(
-                title='Success', text='{} is saved'.format(args.data_type))
+                title='Success', text='config is saved')
         except Exception as e:
             return notify.notify(title='Error!', text=str(e))
 

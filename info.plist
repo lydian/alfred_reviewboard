@@ -34,7 +34,7 @@
 				<false/>
 			</dict>
 		</array>
-		<key>9371B428-E3F9-4E46-870C-424AC149C5E6</key>
+		<key>60D10AB8-0A86-4AD6-8D96-66E2A48CB7F3</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
@@ -81,7 +81,7 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>python reviewboard.py configure --save {query}</string>
+				<string>python reviewboard.py configure</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -99,49 +99,23 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>alfredfiltersresults</key>
-				<false/>
-				<key>alfredfiltersresultsmatchmode</key>
-				<integer>0</integer>
-				<key>argumenttrimmode</key>
-				<integer>0</integer>
 				<key>argumenttype</key>
-				<integer>1</integer>
-				<key>escaping</key>
-				<integer>102</integer>
+				<integer>2</integer>
 				<key>keyword</key>
 				<string>rconfig</string>
-				<key>queuedelaycustom</key>
-				<integer>3</integer>
-				<key>queuedelayimmediatelyinitially</key>
-				<true/>
-				<key>queuedelaymode</key>
-				<integer>0</integer>
-				<key>queuemode</key>
-				<integer>1</integer>
-				<key>runningsubtext</key>
-				<string></string>
-				<key>script</key>
-				<string>python reviewboard.py configure {query}</string>
-				<key>scriptargtype</key>
-				<integer>0</integer>
-				<key>scriptfile</key>
-				<string></string>
 				<key>subtext</key>
 				<string></string>
-				<key>title</key>
-				<string>Configure Revieboard</string>
-				<key>type</key>
-				<integer>0</integer>
+				<key>text</key>
+				<string>Configure Reviewboard Settings</string>
 				<key>withspace</key>
-				<true/>
+				<false/>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
+			<string>alfred.workflow.input.keyword</string>
 			<key>uid</key>
-			<string>9371B428-E3F9-4E46-870C-424AC149C5E6</string>
+			<string>60D10AB8-0A86-4AD6-8D96-66E2A48CB7F3</string>
 			<key>version</key>
-			<integer>2</integer>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -270,24 +244,23 @@
 				<key>argumenttrimmode</key>
 				<integer>1</integer>
 				<key>argumenttype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>ruser</string>
+				<string>rvu</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
 				<false/>
 				<key>queuedelaymode</key>
-				<integer>1</integer>
+				<integer>2</integer>
 				<key>queuemode</key>
-				<integer>1</integer>
+				<integer>2</integer>
 				<key>runningsubtext</key>
 				<string>Loading.. please wait</string>
 				<key>script</key>
-				<string>echo '{query}' | sed 's/ $/ -/g' | xargs python reviewboard.py search user --username
-</string>
+				<string>echo '{query}' | sed 's/ $/ -/g' | sed 's/^$/" "/g' | xargs python reviewboard.py search user </string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -327,12 +300,12 @@
 			<key>ypos</key>
 			<integer>210</integer>
 		</dict>
-		<key>9371B428-E3F9-4E46-870C-424AC149C5E6</key>
+		<key>60D10AB8-0A86-4AD6-8D96-66E2A48CB7F3</key>
 		<dict>
 			<key>xpos</key>
 			<integer>90</integer>
 			<key>ypos</key>
-			<integer>70</integer>
+			<integer>50</integer>
 		</dict>
 		<key>98ECF621-28A9-4CF4-A1EB-063D08424D66</key>
 		<dict>
@@ -353,7 +326,7 @@
 			<key>xpos</key>
 			<integer>510</integer>
 			<key>ypos</key>
-			<integer>70</integer>
+			<integer>50</integer>
 		</dict>
 	</dict>
 	<key>webaddress</key>
